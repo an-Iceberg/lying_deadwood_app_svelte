@@ -4,7 +4,15 @@
       "name": "Run Tauri App",
       "type": "f5anything",
       "request": "launch",
-      "command": "deno task tauri dev",
+      "command": "cargo tauri dev",
+      "showTerminal": true,
+      "terminalName": "Tauri"
+    },
+    {
+      "name": "Build Tauri App",
+      "type": "f5anything",
+      "request": "launch",
+      "command": "NO_STRIP=true cargo tauri build",
       "showTerminal": true,
       "terminalName": "Tauri"
     }
