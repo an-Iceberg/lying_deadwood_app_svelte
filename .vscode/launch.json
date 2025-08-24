@@ -1,0 +1,12 @@
+{
+  "configurations": [
+    {
+      "name": "Run Tauri App",
+      "type": "f5anything",
+      "request": "launch",
+      "command": "deno task tauri dev",
+      "showTerminal": true,
+      "terminalName": "Tauri"
+    }
+  ]
+}
