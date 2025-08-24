@@ -1,8 +1,34 @@
 <script lang="ts">
 import {invoke} from "@tauri-apps/api/core";
 
+const tree_species = [
+  [-1, "unknown"],
+  [100, "some species"],
+];
+
+const decay_states = [1, 2, 3, 4, 5];
+
 let name = $state("");
 let greetMsg = $state("");
+
+let piece_id = $state(0);
+let part_id = $state(0);
+let species = $state(-1);
+
+let d1_max = $state(0.0);
+let d2_max = $state(0.0);
+let azimax = $state(0);
+let distmax = $state(0.0);
+
+let d1_min = $state(0.0);
+let d2_min = $state(0.0);
+let azimin = $state(0);
+let distmin = $state(0.0);
+
+let length = $state(0);
+let decay = $state(0);
+let ref_tree_nr = $state(0);
+let tree_nr = $state(0);
 
 async function greet(event: Event) {
   event.preventDefault();
