@@ -64,17 +64,17 @@ async function greet(event: Event) {
     <input type="number" min="1" max="50" step="0.1" required />
   </label>
 
-  <!-- CSS:Grid might be a better solution for this -->
+  <!-- Todo: use CSS:grid for this and split into 3 columns: label, input, error message -->
   <div class="vertical">
     <div class="horizontal">
       <label>
         Year of data collection:
-        <input type="number" min="2025" step="1" required />
+        <input id="year" type="number" min="2025" step="1" required />
       </label>
 
       <label>
         Area ID:
-        <input type="number" min="0" step="1" required />
+        <input id="area_id" type="number" min="0" step="1" required />
       </label>
 
       <label>
@@ -86,17 +86,17 @@ async function greet(event: Event) {
     <div class="horizontal">
       <label>
         Piece ID:
-        <input type="number" min="1" step="1" required />
+        <input id="piece_id" type="number" min="1" step="1" required />
       </label>
 
       <label>
         Part ID
-        <input type="number" min="1" step="1" required />
+        <input id="part_id" type="number" min="1" step="1" required />
       </label>
 
       <label>
         Species:
-        <select required>
+        <select id="species" required>
           <option value="-1">-1 unknown</option>
           <option value="100">100 species</option>
           <option value="101">101 species</option>
@@ -109,25 +109,25 @@ async function greet(event: Event) {
     <div class="horizontal">
       <label>
         Diameter 1 max.:
-        <input type="number" min="0" step="0.1" required />
+        <input id="d1_max" type="number" min="0" step="0.1" required />
         cm
       </label>
 
       <label>
         Diameter 2 max.:
-        <input type="number" min="0" step="0.1" required />
+        <input id="d2_max" type="number" min="0" step="0.1" required />
         cm
       </label>
 
       <label>
         Azimuth max.:
-        <input type="number" min="0" max="400" step="0.5" required />
+        <input id="azimax" type="number" min="0" max="400" step="0.5" required />
         gon
       </label>
 
       <label>
         Distance max.:
-        <input type="number" min="0" step="0.1" required />
+        <input id="distmax" type="number" min="0" step="0.1" required />
         m
       </label>
     </div>
@@ -135,25 +135,25 @@ async function greet(event: Event) {
     <div class="horizontal">
       <label>
         Diameter 1 min.:
-        <input type="number" min="0" step="0.1" required />
+        <input id="d1_min" type="number" min="0" step="0.1" required />
         cm
       </label>
 
       <label>
         Diameter 2 min.:
-        <input type="number" min="0" step="0.1" required />
+        <input id="d2_min" type="number" min="0" step="0.1" required />
         cm
       </label>
 
       <label>
         Azimuth min.:
-        <input type="number" min="0" max="400" step="0.5" required />
+        <input id="azimin" type="number" min="0" max="400" step="0.5" required />
         gon
       </label>
 
       <label>
         Distance min.:
-        <input type="number" min="0" step="0.1" required />
+        <input id="distmin" type="number" min="0" step="0.1" required />
         m
       </label>
     </div>
@@ -161,13 +161,13 @@ async function greet(event: Event) {
     <div class="horizontal">
       <label>
         Length:
-        <input type="number" min="0" step="0.1" required />
+        <input id="length" type="number" min="0" step="0.1" required />
         m
       </label>
 
       <label>
         Decay:
-        <select required>
+        <select id="decay" required>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -177,13 +177,13 @@ async function greet(event: Event) {
       </label>
 
       <label>
-        Reference Tree Nr.:
-        <input type="number" min="1" step="1" required />
+        Reference Tree ID.:
+        <input id="ref_tree_id" type="number" min="1" step="1" required />
       </label>
 
       <label>
-        Tree Nr.:
-        <input type="number" min="1" step="1" />
+        Former Tree Nr.:
+        <input id="former_id" type="number" min="1" step="1" />
       </label>
     </div>
   </div>
