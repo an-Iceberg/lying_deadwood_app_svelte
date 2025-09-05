@@ -1,5 +1,7 @@
 <script lang="ts">
 import {invoke} from "@tauri-apps/api/core";
+// import "../../static/bootstrap.css";
+// import "$static/bootstrap.css";
 
 const tree_species = [
   [-1, "unknown"],
@@ -13,24 +15,43 @@ const decay_states = [1, 2, 3, 4, 5];
 let name = $state("");
 let greetMsg = $state("");
 
+let area_group = $state(0);
+let subarea = $state(0);
+let start_date = $state("");
+
 let piece_id = $state(0);
+let piece_id_error = $state("Kein Wert vorhanden");
 let part_id = $state(0);
+let part_id_error = $state("Kein Wert vorhanden");
 let species = $state(-1);
+let species_error = $state("");
 
 let d1_max = $state(0.0);
+let d1_max_error = $state("");
 let d2_max = $state(0.0);
+let d2_max_error = $state("");
 let azimax = $state(0);
+let azimax_error = $state("");
 let distmax = $state(0.0);
+let distmax_error = $state("");
 
 let d1_min = $state(0.0);
+let d1_min_error = $state("");
 let d2_min = $state(0.0);
+let d2_min_error = $state("");
 let azimin = $state(0);
+let azimin_error = $state("");
 let distmin = $state(0.0);
+let distmin_error = $state("");
 
 let length = $state(0);
+let length_error = $state("");
+let min_vals_error = $state("");
 let decay = $state(0);
 let ref_tree_nr = $state(0);
-let tree_nr = $state(0);
+let ref_tree_nr_error = $state("");
+let former_tree_nr = $state(0);
+let former_tree_nr_error = $state("");
 
 async function greet(event: Event) {
   event.preventDefault();
@@ -39,35 +60,65 @@ async function greet(event: Event) {
 }
 </script>
 
-<main class="container">
-  <h1>Welcome to Tauri + Svelte</h1>
-
-  <div class="row">
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo vite" alt="Vite Logo" />
-    </a>
-    <a href="https://tauri.app" target="_blank">
-      <img src="/tauri.svg" class="logo tauri" alt="Tauri Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank">
-      <img src="/svelte.svg" class="logo svelte-kit" alt="SvelteKit Logo" />
-    </a>
-  </div>
-  <p>Click on the Tauri, Vite, and SvelteKit logos to learn more.</p>
-
-  <form class="row" onsubmit={greet}>
-    <input id="greet-input" placeholder="Enter a name..." bind:value={name} />
-    <button type="submit">Greet</button>
-  </form>
-  <p>{greetMsg}</p>
-
-  <label>
-    Label
-    <input type="number" min="1" max="50" step="0.1" required />
-  </label>
+<main class="container-fluid">
+  <h1 class="h1">Welcome to Tauri + Svelte</h1>
 
   <!-- Todo: use CSS:grid for this and split into 3 columns: label, input, error message -->
-  <div class="vertical">
+  <div class="vertical inputs">
+    <div class="container text-start">
+      <label class="form-label" for="area_group">Flächengruppe:</label>
+      <input
+        class="form-control mb-4"
+        type="number"
+        name="area_group"
+        id="area_group"
+        min="1"
+        max="999999"
+        step="1"
+        required
+      />
+
+      <label class="form-label" for="subarea">Subarea:</label>
+      <input
+        class="form-control mb-4"
+        type="number"
+        name="subarea"
+        id="subarea"
+        min="1"
+        max="999999"
+        step="1"
+        required
+      />
+
+      <label class="form-label" for="start_date">Aufnahmedatum:</label>
+      <input
+        class="form-control mb-4"
+        type="date"
+        name="start_date"
+        id="start_date"
+        min={new Date().toISOString().split("T")[0]}
+        value={new Date().toISOString().split("T")[0]}
+        required
+      />
+
+      <label class="form-label" for="piece_id">Stück ID:</label>
+      <input
+        class="form-control"
+        type="number"
+        name="piece_id"
+        id="piece_id"
+        min="1"
+        max="999999"
+        step="1"
+        required
+      />
+      <div class="alert alert-warning form-text mb-4">{piece_id_error}</div>
+
+      <label for="part_id" class="form-label">Teilstück ID:</label>
+      <input type="number" class="form-control" id="part_id" min="1" max="99" step="1" required />
+      <p class="alert alert-warning form-text mb-4">{part_id_error}</p>
+    </div>
+
     <label>
       Year of data collection:
       <input id="year" type="number" min="2025" step="1" required />
@@ -182,137 +233,4 @@ async function greet(event: Event) {
 </main>
 
 <style>
-.horizontal {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-  justify-content: start;
-  align-items: center;
-}
-
-.vertical {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  justify-content: space-between;
-  align-items: start;
-}
-
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
-}
-
-.logo.svelte-kit:hover {
-  filter: drop-shadow(0 0 2em #ff3e00);
-}
-
-:root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-
-  color: #0f0f0f;
-  background-color: #f6f6f6;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
-}
-
-.container {
-  margin: 0;
-  padding-top: 10vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: 0.75s;
-}
-
-.logo.tauri:hover {
-  filter: drop-shadow(0 0 2em #24c8db);
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-
-a:hover {
-  color: #535bf2;
-}
-
-h1 {
-  text-align: center;
-}
-
-input,
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  color: #0f0f0f;
-  background-color: #ffffff;
-  transition: border-color 0.25s;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
-}
-
-button {
-  cursor: pointer;
-}
-
-button:hover {
-  border-color: #396cd8;
-}
-button:active {
-  border-color: #396cd8;
-  background-color: #e8e8e8;
-}
-
-input,
-button {
-  outline: none;
-}
-
-#greet-input {
-  margin-right: 5px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #f6f6f6;
-    background-color: #2f2f2f;
-  }
-
-  a:hover {
-    color: #24c8db;
-  }
-
-  input,
-  button {
-    color: #ffffff;
-    background-color: #0f0f0f98;
-  }
-  button:active {
-    background-color: #0f0f0f69;
-  }
-}
 </style>
