@@ -21,41 +21,76 @@ let start_date = $state("");
 
 let piece_id = $state(0);
 let piece_id_error = $state("Kein Wert vorhanden");
+function piece_id_validator() {
+  console.log(`piece_id: ${piece_id}`);
+  if (piece_id < 1) {
+    piece_id_error = "Must be > 1";
+  } else {
+    piece_id_error = "";
+  }
+}
+
 let part_id = $state(0);
 let part_id_error = $state("");
+function part_id_validator() {}
+
 let species = $state(-1);
 let species_error = $state("Keine valide Spezies");
 
 let d1_max = $state(0.0);
 let d1_max_error = $state("Kein Wert vorhanden");
+function d1_max_validator() {}
+
 let d2_max = $state(0.0);
 let d2_max_error = $state("Kein Wert vorhanden");
+function d2_max_validator() {}
+
 let azimax = $state(0);
 let azimax_error = $state("Kein Wert vorhanden");
+function azimax_validator() {}
+
 let distmax = $state(0.0);
 let distmax_error = $state("Kein Wert vorhanden");
+function distmax_validator() {}
 
 let d1_min = $state(0.0);
 let d1_min_error = $state("Kein Wert vorhanden");
+function d1_min_validator() {
+  if (d1_min < 7 || isNaN(d1_min)) {
+    d1_min_error = "Ungültiger Wert";
+  } else {
+    d1_min_error = "";
+  }
+}
+
 let d2_min = $state(0.0);
 let d2_min_error = $state("Kein Wert vorhanden");
+function d2_min_validator() {}
+
 let azimin = $state(0);
 let azimin_error = $state("Kein Wert vorhanden");
+function azimin_validator() {}
+
 let distmin = $state(0.0);
 let distmin_error = $state("Kein Wert vorhanden");
+function distmin_validator() {}
 
 let length = $state(0);
 let length_error = $state("Kein Wert vorhanden");
+function length_validator() {}
+
 let min_vals_error = $state("Keine Werte vorhanden");
+function min_vals_validator() {}
+
 let decay = $state(0);
+
 let ref_tree_nr = $state(0);
 let ref_tree_nr_error = $state("Kein Wert vorhanden");
+function ref_tree_nr_validator() {}
+
 let former_tree_nr = $state(0);
 let former_tree_nr_error = $state("");
-
-function piece_id_validator() {
-  console.log(`piece_id: ${piece_id}`);
-}
+function former_tree_nr_validator() {}
 
 async function greet(event: Event) {
   event.preventDefault();
@@ -65,7 +100,7 @@ async function greet(event: Event) {
 </script>
 
 <main class="container-fluid">
-  <h1 class="h1">Welcome to Tauri + Svelte</h1>
+  <h1 class="h1">Liegende Totholzapp</h1>
 
   <ul class="nav nav-pills">
     <li class="nav-item">
@@ -143,6 +178,9 @@ async function greet(event: Event) {
       type="number"
       class="form-control"
       class:mb-4={part_id_error == ""}
+      bind:value={part_id}
+      onchange={part_id_validator}
+      onkeypress={part_id_validator}
       id="part_id"
       min="1"
       max="99"
@@ -190,6 +228,10 @@ async function greet(event: Event) {
     <label for="d1_max" class="form-label">Durchmesser 1 max.:</label>
     <input
       class="form-control"
+      class:mb-4={piece_id_error == ""}
+      bind:value={d1_max}
+      onchange={d1_max_validator}
+      onkeypress={d1_max_validator}
       type="number"
       name="d1_max"
       id="d1_max"
@@ -204,6 +246,10 @@ async function greet(event: Event) {
     <label for="d2_max" class="form-label">Durchmesser 2 max.:</label>
     <input
       class="form-control"
+      class:mb-4={d2_max_error == ""}
+      bind:value={d2_max}
+      onchange={d2_max_validator}
+      onkeypress={d2_max_validator}
       type="number"
       name="d2_max"
       id="d2_max"
@@ -218,6 +264,10 @@ async function greet(event: Event) {
     <label for="azimax" class="form-label">Azimuth max.:</label>
     <input
       class="form-control"
+      class:mb-4={azimax_error == ""}
+      bind:value={azimax}
+      onchange={azimax_validator}
+      onkeypress={azimax_validator}
       type="number"
       name="azimax"
       id="azimax"
@@ -232,6 +282,10 @@ async function greet(event: Event) {
     <label for="distmax" class="form-label">Distanz max.:</label>
     <input
       class="form-control"
+      class:mb-4={distmax_error == ""}
+      bind:value={distmax}
+      onchange={distmax_validator}
+      onkeydown={distmax_validator}
       type="number"
       name="distmax"
       id="distmax"
@@ -246,6 +300,10 @@ async function greet(event: Event) {
     <label for="d1_min" class="form-label">Durchmesser 1 min.:</label>
     <input
       class="form-control"
+      class:mb-4={d1_min_error == ""}
+      bind:value={d1_min}
+      onchange={d1_min_validator}
+      onkeypress={d1_min_validator}
       type="number"
       name="d1_min"
       id="d1_min"
@@ -260,6 +318,10 @@ async function greet(event: Event) {
     <label for="d2_min" class="form-label">Durchmesser 2 min.:</label>
     <input
       class="form-control"
+      class:mb-4={d2_min_error == ""}
+      bind:value={d2_min}
+      onchange={d2_min_validator}
+      onkeypress={d2_min_validator}
       type="number"
       name="d2_min"
       id="d2_min"
@@ -274,6 +336,10 @@ async function greet(event: Event) {
     <label for="azimin" class="form-label">Azimuth min.:</label>
     <input
       class="form-control"
+      class:mb-4={azimin_error == ""}
+      bind:value={azimax}
+      onchange={azimin_validator}
+      onkeypress={azimin_validator}
       type="number"
       name="azimin"
       id="azimin"
@@ -288,6 +354,10 @@ async function greet(event: Event) {
     <label for="distmin" class="form-label">Distanz min.:</label>
     <input
       class="form-control"
+      class:mb-4={distmin_error == ""}
+      bind:value={distmin}
+      onchange={distmin_validator}
+      onkeypress={distmin_validator}
       type="number"
       name="distmin"
       id="distmin"
@@ -302,6 +372,10 @@ async function greet(event: Event) {
     <label for="length" class="form-label">Länge</label>
     <input
       class="form-control"
+      class:mb-4={length_error == ""}
+      bind:value={length}
+      onchange={length_validator}
+      onkeypress={length_validator}
       type="number"
       name="length"
       id="length"
@@ -321,6 +395,10 @@ async function greet(event: Event) {
     <label class="form-label" for="ref_tree_nr">Referenz Baum ID:</label>
     <input
       class="form-control"
+      class:mb-4={ref_tree_nr_error == ""}
+      bind:value={ref_tree_nr}
+      onchange={ref_tree_nr_validator}
+      onkeypress={ref_tree_nr_validator}
       type="number"
       name="length"
       id="ref_tree_nr"
@@ -335,6 +413,10 @@ async function greet(event: Event) {
     <label class="form-label" for="former_tree_nr">Ehem. Baum ID:</label>
     <input
       class="form-control"
+      class:mb-4={former_tree_nr_error == ""}
+      bind:value={former_tree_nr}
+      onchange={former_tree_nr_validator}
+      onkeypress={former_tree_nr_validator}
       type="number"
       name="length"
       id="length"
@@ -350,7 +432,7 @@ async function greet(event: Event) {
   <div class="data container text-start"></div>
 
   <!-- Todo: use CSS:grid for this and split into 3 columns: label, input, error message -->
-  <div class="vertical inputs">
+  <!-- <div class="vertical inputs">
     <div class="container text-start"></div>
 
     <label>
@@ -463,7 +545,7 @@ async function greet(event: Event) {
       Former Tree Nr.:
       <input id="former_id" type="number" min="1" step="1" />
     </label>
-  </div>
+  </div> -->
 </main>
 
 <style>

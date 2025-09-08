@@ -16,3 +16,5 @@ pub fn run()
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
+
+// https://v2.tauri.app/develop/state-management/
