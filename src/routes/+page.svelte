@@ -2,6 +2,8 @@
 import {invoke} from "@tauri-apps/api/core";
 import wsl_logo from "../Logo_WSL.svg";
 
+const today = new Date().toISOString().split("T")[0];
+
 const ONE_TIME_DATA_TAB = 1;
 const INPUT_DATA_TAB = 2;
 const DATA_TAB = 3;
@@ -25,44 +27,29 @@ const decay_states = [1, 2, 3, 4, 5];
 
 let current_tab = $state(ONE_TIME_DATA_TAB);
 
-let area_group = $state(0);
+let area_group = $state();
 let subarea = $state(0);
 let start_date = $state("");
 
 let piece_id = $state(0);
-let piece_id_error = $state("Kein Wert vorhanden");
-function piece_id_validator() {
-  if (piece_id < 1) {
-    piece_id_error = "Must be > 1";
-  } else {
-    piece_id_error = "";
-  }
-}
+let piece_id_error: string | null = $state("Kein Wert vorhanden");
 
-let part_id = $state(0);
+let part_id = $state(1);
 let part_id_error = $state("");
 function part_id_validator() {
   // Todo: implement :^)
 }
 
-let species = $state(-1);
+let species: number | null = $state(null);
 let species_error = $state("Keine valide Spezies");
 
-let d1_max = $state(0.0);
-let d1_max_error = $state("Kein Wert vorhanden");
-function d1_max_validator() {
-  if (d1_max > MAX_DIAMETER) {
-    d1_max_error = `Wert muss kleiner als ${MAX_DIAMETER} sein`;
-  } else if (d1_max < MIN_DIAMETER_1) {
-    d1_max_error = `Wert muss grösser sein als ${MIN_DIAMETER_1} sein`;
-  } else {
-    d1_max_error = "";
-  }
-}
+let d1_max: number | null = $state(null);
+let d1_max_error: string | null = $state("Kein Wert vorhanden");
+let d1_max_not_measurable = $state(false);
 
-let d2_max = $state(0.0);
-let d2_max_error = $state("Kein Wert vorhanden");
-function d2_max_validator() {}
+let d2_max: number | null = $state(0.0);
+let d2_max_error: string | null = $state("Kein Wert vorhanden");
+let d2_max_not_measurable = $state(false);
 
 let azimax = $state(0);
 let azimax_error = $state("Kein Wert vorhanden");
@@ -72,19 +59,13 @@ let distmax = $state(0.0);
 let distmax_error = $state("Kein Wert vorhanden");
 function distmax_validator() {}
 
-let d1_min = $state(0.0);
-let d1_min_error = $state("Kein Wert vorhanden");
-function d1_min_validator() {
-  if (d1_min < 7 || isNaN(d1_min)) {
-    d1_min_error = "Ungültiger Wert";
-  } else {
-    d1_min_error = "";
-  }
-}
+let d1_min: number | null = $state(0.0);
+let d1_min_error: string | null = $state("Kein Wert vorhanden");
+let d1_min_not_measurable = $state(false);
 
-let d2_min = $state(0.0);
-let d2_min_error = $state("Kein Wert vorhanden");
-function d2_min_validator() {}
+let d2_min: number | null = $state(0.0);
+let d2_min_error: string | null = $state("Kein Wert vorhanden");
+let d2_min_not_measurable = $state(false);
 
 let azimin = $state(0);
 let azimin_error = $state("Kein Wert vorhanden");
@@ -191,8 +172,8 @@ async function greet(event: Event) {
       type="date"
       name="start_date"
       id="start_date"
-      min={new Date().toISOString().split("T")[0]}
-      value={new Date().toISOString().split("T")[0]}
+      min={today}
+      value={today}
       required
     />
   </div>
@@ -205,8 +186,10 @@ async function greet(event: Event) {
       class="form-control"
       class:mb-4={!piece_id_error}
       bind:value={piece_id}
-      onchange={piece_id_validator}
-      onkeypress={piece_id_validator}
+      onchange={() => {
+        if (piece_id < 1) piece_id_error = "Must be > 1";
+        else piece_id_error = null;
+      }}
       type="number"
       name="piece_id"
       id="piece_id"
@@ -237,27 +220,15 @@ async function greet(event: Event) {
     {/if}
 
     <!-- help: https://www.w3schools.com/howto/howto_js_filter_dropdown.asp -->
-    <label class="form-label" for="species">Spezies:</label>
-    <div class="dropdown mb-4" id="species">
-      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="species"
-        >Spezies</button
-      >
-      <ul class="dropdown-menu">
-        <li class="dropdown-item">100 something</li>
-        <li class="dropdown-item">101 something</li>
-        <li class="dropdown-item">102 something</li>
-        <li class="dropdown-item">103 something</li>
-      </ul>
-    </div>
 
-    <!-- <label for="species" class="form-label">Spezies:</label>
-    <select id="species" class="dropdown-menu drowdown-toggle" required>
-      <option class="dropdown-item" value="-1">-1 unknown</option>
-      <option class="dropdown-item" value="100">100 species</option>
-      <option class="dropdown-item" value="101">101 species</option>
-      <option class="dropdown-item" value="102">102 species</option>
-      <option class="dropdown-item" value="103">103 species</option>
-    </select> -->
+    <label class="form-label" for="species">Baumart:</label>
+    <select class="form-select mb-4" id="species">
+      <option value="null">null unknown</option>
+      <option value="100">100 species</option>
+      <option value="101">101 species</option>
+      <option value="102">102 species</option>
+      <option value="103">103 species</option>
+    </select>
 
     <!-- <label for="cars">Choose a car:</label>
     <select name="cars" id="cars">
@@ -274,11 +245,29 @@ async function greet(event: Event) {
     <!-- TODO: add units to unit measurements -->
     <label for="d1_max" class="form-label">Durchmesser 1 max.:</label>
     <input
+      class="ms-2"
+      bind:checked={d1_max_not_measurable}
+      onchange={() => {
+        if (d2_max_not_measurable) d2_max_not_measurable = false;
+        if (d1_max_not_measurable) d1_max = null;
+      }}
+      type="checkbox"
+      name="d1_max_not_measurable"
+      id="d1_max_not_measurable"
+    />
+    <label for="d1_max_not_measurable">nicht messbar</label>
+    <input
       class="form-control"
       class:mb-4={!piece_id_error}
+      disabled={d1_max_not_measurable}
       bind:value={d1_max}
-      onchange={d1_max_validator}
-      onkeypress={d1_max_validator}
+      onchange={() => {
+        if (d1_max == null) d1_max_error = "Kein Wert vorhanden";
+        else if (d1_max > MAX_DIAMETER) d1_max_error = `Wert muss kleiner als ${MAX_DIAMETER} sein`;
+        else if (d1_max < MIN_DIAMETER_1)
+          d1_max_error = `Wert muss grösser sein als ${MIN_DIAMETER_1} sein`;
+        else d1_max_error = null;
+      }}
       type="number"
       name="d1_max"
       id="d1_max"
@@ -292,11 +281,29 @@ async function greet(event: Event) {
 
     <label for="d2_max" class="form-label">Durchmesser 2 max.:</label>
     <input
+      class="ms-2"
+      bind:checked={d2_max_not_measurable}
+      onchange={() => {
+        if (d1_max_not_measurable) d1_max_not_measurable = false;
+        if (d2_max_not_measurable) d2_max = null;
+      }}
+      type="checkbox"
+      name="d2_max_not_measurable"
+      id="d2_max_not_measurable"
+    />
+    <label for="d2_max_not_measurable">nicht messbar</label>
+    <input
       class="form-control"
       class:mb-4={!d2_max_error}
+      disabled={d2_max_not_measurable}
       bind:value={d2_max}
-      onchange={d2_max_validator}
-      onkeypress={d2_max_validator}
+      onchange={() => {
+        if (d2_max == null) d2_max_error = "Kein Wert vorhanden";
+        else if (d2_max > MAX_DIAMETER) d2_max_error = `Wert muss kleiner als ${MAX_DIAMETER} sein`;
+        else if (d2_max < MIN_DIAMETER_1)
+          d2_max_error = `Wert muss grösser als ${MIN_DIAMETER_1} sein`;
+        else d2_max_error = null;
+      }}
       type="number"
       name="d2_max"
       id="d2_max"
@@ -346,11 +353,29 @@ async function greet(event: Event) {
 
     <label for="d1_min" class="form-label">Durchmesser 1 min.:</label>
     <input
+      class="ms-2"
+      bind:checked={d1_min_not_measurable}
+      onchange={() => {
+        if (d2_min_not_measurable) d2_min_not_measurable = false;
+        if (d1_min_not_measurable) d1_min = null;
+      }}
+      type="checkbox"
+      name="d1_min_not_measurable"
+      id="d1_min_not_measurable"
+    />
+    <label for="d1_min_not_measurable">nicht messbar</label>
+    <input
       class="form-control"
       class:mb-4={!d1_min_error}
+      disabled={d1_min_not_measurable}
       bind:value={d1_min}
-      onchange={d1_min_validator}
-      onkeypress={d1_min_validator}
+      onchange={() => {
+        if (d1_min == null) d1_min_error = "Kein Wert vorhanden";
+        else if (d1_min > MAX_DIAMETER) d1_min_error = `Wert muss kleiner als ${MAX_DIAMETER} sein`;
+        else if (d1_min < MIN_DIAMETER_1)
+          d1_min_error = `Wert muss grösser als ${MIN_DIAMETER_1} sein`;
+        else d1_min_error = null;
+      }}
       type="number"
       name="d1_min"
       id="d1_min"
@@ -364,11 +389,29 @@ async function greet(event: Event) {
 
     <label for="d2_min" class="form-label">Durchmesser 2 min.:</label>
     <input
+      class="ms-2"
+      bind:checked={d2_min_not_measurable}
+      onchange={() => {
+        if (d1_min_not_measurable) d1_min_not_measurable = false;
+        if (d2_min_not_measurable) d2_min = null;
+      }}
+      type="checkbox"
+      name="d2_min_not_measurable"
+      id="d2_min_not_measurable"
+    />
+    <label for="d2_min_not_measurable">nicht messbar</label>
+    <input
       class="form-control"
       class:mb-4={!d2_min_error}
+      disabled={d2_min_not_measurable}
       bind:value={d2_min}
-      onchange={d2_min_validator}
-      onkeypress={d2_min_validator}
+      onchange={() => {
+        if (d2_min == null) d2_min_error = "Kein Wert vorhanden";
+        else if (d2_min > MAX_DIAMETER) d2_min_error = `Wert muss kleiner als ${MAX_DIAMETER} sein`;
+        else if (d2_min < MIN_DIAMETER_1)
+          d2_min_error = `Wert muss grösser als ${MIN_DIAMETER_1} sein`;
+        else d2_min_error = null;
+      }}
       type="number"
       name="d2_min"
       id="d2_min"
@@ -484,122 +527,6 @@ async function greet(event: Event) {
   <div class="data container text-start" class:d-none={current_tab != DATA_TAB}>
     <h1 class="h1">Aufgenommene Daten</h1>
   </div>
-
-  <!-- Todo: use CSS:grid for this and split into 3 columns: label, input, error message -->
-  <!-- <div class="vertical inputs">
-    <div class="container text-start"></div>
-
-    <label>
-      Year of data collection:
-      <input id="year" type="number" min="2025" step="1" required />
-    </label>
-
-    <label>
-      Area ID:
-      <input id="area_id" type="number" min="0" step="1" required />
-    </label>
-
-    <label>
-      Area ID
-      <input type="number" min="0" step="1" required />
-    </label>
-
-    <label>
-      Piece ID:
-      <input id="piece_id" type="number" min="1" step="1" required />
-    </label>
-
-    <label>
-      Part ID
-      <input id="part_id" type="number" min="1" step="1" required />
-    </label>
-
-    <label>
-      Species:
-      <select id="species" required>
-        <option value="-1">-1 unknown</option>
-        <option value="100">100 species</option>
-        <option value="101">101 species</option>
-        <option value="102">102 species</option>
-        <option value="103">103 species</option>
-      </select>
-    </label>
-
-    <label>
-      Diameter 1 max.:
-      <input id="d1_max" type="number" min="0" step="0.1" required />
-      cm
-    </label>
-
-    <label>
-      Diameter 2 max.:
-      <input id="d2_max" type="number" min="0" step="0.1" required />
-      cm
-    </label>
-
-    <label>
-      Azimuth max.:
-      <input id="azimax" type="number" min="0" max="400" step="0.5" required />
-      gon
-    </label>
-
-    <label>
-      Distance max.:
-      <input id="distmax" type="number" min="0" step="0.1" required />
-      m
-    </label>
-
-    <label>
-      Diameter 1 min.:
-      <input id="d1_min" type="number" min="0" step="0.1" required />
-      cm
-    </label>
-
-    <label>
-      Diameter 2 min.:
-      <input id="d2_min" type="number" min="0" step="0.1" required />
-      cm
-    </label>
-
-    <label>
-      Azimuth min.:
-      <input id="azimin" type="number" min="0" max="400" step="0.5" required />
-      gon
-    </label>
-
-    <label>
-      Distance min.:
-      <input id="distmin" type="number" min="0" step="0.1" required />
-      m
-    </label>
-
-    <label>
-      Length:
-      <input id="length" type="number" min="0" step="0.1" required />
-      m
-    </label>
-
-    <label>
-      Decay:
-      <select id="decay" required>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
-    </label>
-
-    <label>
-      Reference Tree ID.:
-      <input id="ref_tree_id" type="number" min="1" step="1" required />
-    </label>
-
-    <label>
-      Former Tree Nr.:
-      <input id="former_id" type="number" min="1" step="1" />
-    </label>
-  </div> -->
 </main>
 
 <style>
