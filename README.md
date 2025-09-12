@@ -23,3 +23,23 @@ useful commands:
 `cargo tauri android build --debug`
 
 `cargo tauri android build --split-per-abi --apk`
+
+## Todo:
+- [ ] ability to swap min with max
+- [ ] find a good solution for `part_id`
+- [ ] display largest ID in input somewhere
+- [ ] display conditions (maybe make settings out of it) (what did i mean by this⁇)
+- [ ] installation and dev instructions (with references to sources) for all platforms
+  - [ ] android device in debug mode
+  - [ ] `adb`
+  - [ ] `android-sdk`
+  - [ ] `android-ndk`
+  - [ ] `gradle`
+  - [ ] `kotlin`
+  - [ ] `java`
+  - [ ] `sdkmanager`
+  - [ ] `deno`
+  - [ ] `rust`
+  - [ ] [dependencies listed on tauri website](https://tauri.app/start/prerequisites/)
+  - [ ] environment variables
+  - [ ] proper vscode F5 commands

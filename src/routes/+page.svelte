@@ -57,7 +57,6 @@ function azimax_validator() {}
 
 let distmax = $state(0.0);
 let distmax_error = $state("Kein Wert vorhanden");
-function distmax_validator() {}
 
 let d1_min: number | null = $state(0.0);
 let d1_min_error: string | null = $state("Kein Wert vorhanden");
@@ -69,28 +68,22 @@ let d2_min_not_measurable = $state(false);
 
 let azimin = $state(0);
 let azimin_error = $state("Kein Wert vorhanden");
-function azimin_validator() {}
 
 let distmin = $state(0.0);
 let distmin_error = $state("Kein Wert vorhanden");
-function distmin_validator() {}
 
 let length = $state(0);
 let length_error = $state("Kein Wert vorhanden");
-function length_validator() {}
 
 let min_vals_error = $state("Keine Werte vorhanden");
-function min_vals_validator() {}
 
 let decay = $state(0);
 
 let ref_tree_nr = $state(0);
 let ref_tree_nr_error = $state("Kein Wert vorhanden");
-function ref_tree_nr_validator() {}
 
 let former_tree_nr = $state(0);
 let former_tree_nr_error = $state("");
-function former_tree_nr_validator() {}
 
 let comments = $state("");
 
@@ -105,6 +98,7 @@ async function greet(event: Event) {
 </script>
 
 <main class="container-fluid">
+  <!-- Todo: extract these into components -->
   <!-- Todo: this mess -->
   <header class="row row-cols-auto align-items-start w-100">
     <h1 class="h1 col">Liegende Totholzapp</h1>
@@ -117,30 +111,31 @@ async function greet(event: Event) {
     />
   </header>
 
-  <ul class="nav nav-pills mb-4">
+  <ul class="nav nav-pills w-100 gap-2 mb-4 justify-content-center">
     <li class="nav-item">
       <button
-        class="nav-link"
+        class="nav-link mx-2"
         class:active={current_tab == ONE_TIME_DATA_TAB}
         onclick={() => (current_tab = ONE_TIME_DATA_TAB)}>Einmalige Daten</button
       >
     </li>
     <li class="nav-item">
       <button
-        class="nav-link"
+        class="nav-link mx-2"
         class:active={current_tab == INPUT_DATA_TAB}
         onclick={() => (current_tab = INPUT_DATA_TAB)}>Neue Daten</button
       >
     </li>
     <li class="nav-item">
       <button
-        class="nav-link"
+        class="nav-link mx-2"
         class:active={current_tab == DATA_TAB}
         onclick={() => (current_tab = DATA_TAB)}>Aufgenommene Daten</button
       >
     </li>
   </ul>
 
+  <!-- Todo: extract tabs into components -->
   <div class="one-time-data container text-start" class:d-none={current_tab != ONE_TIME_DATA_TAB}>
     <label class="form-label" for="area_group">Flächengruppe:</label>
     <input
@@ -338,8 +333,7 @@ async function greet(event: Event) {
       class="form-control"
       class:mb-4={!distmax_error}
       bind:value={distmax}
-      onchange={distmax_validator}
-      onkeypress={distmax_validator}
+      onchange={() => {}}
       type="number"
       name="distmax"
       id="distmax"
@@ -428,8 +422,7 @@ async function greet(event: Event) {
       class="form-control"
       class:mb-4={!azimin_error}
       bind:value={azimax}
-      onchange={azimin_validator}
-      onkeypress={azimin_validator}
+      onchange={() => {}}
       type="number"
       name="azimin"
       id="azimin"
@@ -446,8 +439,7 @@ async function greet(event: Event) {
       class="form-control"
       class:mb-4={!distmin_error}
       bind:value={distmin}
-      onchange={distmin_validator}
-      onkeypress={distmin_validator}
+      onchange={() => {}}
       type="number"
       name="distmin"
       id="distmin"
@@ -464,8 +456,7 @@ async function greet(event: Event) {
       class="form-control"
       class:mb-4={!length_error}
       bind:value={length}
-      onchange={length_validator}
-      onkeypress={length_validator}
+      onchange={() => {}}
       type="number"
       name="length"
       id="length"
@@ -487,8 +478,7 @@ async function greet(event: Event) {
       class="form-control"
       class:mb-4={!ref_tree_nr_error}
       bind:value={ref_tree_nr}
-      onchange={ref_tree_nr_validator}
-      onkeypress={ref_tree_nr_validator}
+      onchange={() => {}}
       type="number"
       name="length"
       id="ref_tree_nr"
@@ -505,8 +495,7 @@ async function greet(event: Event) {
       class="form-control"
       class:mb-4={!former_tree_nr_error}
       bind:value={former_tree_nr}
-      onchange={former_tree_nr_validator}
-      onkeypress={former_tree_nr_validator}
+      onchange={() => {}}
       type="number"
       name="length"
       id="length"
