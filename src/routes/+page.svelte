@@ -1,31 +1,27 @@
 <script lang="ts">
 import {invoke} from "@tauri-apps/api/core";
-import wsl_logo from "../Logo_WSL.svg";
-
-const today = new Date().toISOString().split("T")[0];
-
-const ONE_TIME_DATA_TAB = 1;
-const INPUT_DATA_TAB = 2;
-const DATA_TAB = 3;
-
-const MAX_DIAMETER = 300; // [cm]
-const MAX_DISTANCE = 25; // [m]
-const MAX_LENGTH = 50; // [m]
-const MIN_DIAMETER_1 = 7; // [cm]
-const MIN_LENGTH_1 = 2; // [m]
-const MIN_DIAMETER_2 = 36; // [cm]
-const MIN_LENGTH_2 = 0.5; // [m]
-
-const tree_species = [
-  [-1, "unknown"],
-  [100, "some species"],
-];
-
-const decay_states = [1, 2, 3, 4, 5];
+import Header from "$lib/Header.svelte";
+import Tabs from "$lib/Tabs.svelte";
+import {
+  is_one_time,
+  is_input,
+  is_data,
+  to_one_time,
+  to_input,
+  to_data,
+} from "$lib/tab_state.svelte";
+import {
+  today,
+  MAX_DIAMETER,
+  MAX_DISTANCE,
+  MAX_LENGTH,
+  MIN_DIAMETER_1,
+  MIN_DIAMETER_2,
+  MIN_LENGTH_1,
+  MIN_LENGTH_2,
+} from "$lib/constants.svelte";
 
 // https://svelte.dev/playground/052c877eb34c45ee8f773a8bf8475347?version=5.38.6#H4sIAAAAAAAAA5VVUW_TMBD-K0cAJRVN2iF48ZpKlZgmBGLS2Atq--AkbmuWOMF2ulRZ_ztnO9lSmDZ4qOSc7777vvNnt_UELZhHvM-iqjXsac4zqnkpvLG34TlTHlm2nj5UJscEMN5VLKoqUnuWaxNLqGJPxdNSaCY0wngzlUpe6flKrHTONOhS0xxiOJtOz_sYNywUBpetCa00EqoZgenYfaZlXkoC_uX14odvQscxPJ_5aXH95fvXxc3Fv5fcXCy-usy1JfaGgKqu9I5Jw8zRDjuqUUGroIF4Dk1k4eD-HqajSLKsTlkQ0DEkI7NN4R2uLJ75bWqRmjH3E2cBFxlrRj01M4yCNu5UXmw6ivBoNJNB0IyB234cXsUxONDn2Wi-gcABL23-ulMyf2DwQAuTn0iMHxI7xKOdntM6mzyeu5gpfciZtUBkkUJjEMoFk12HjKsqpwcCm5w1HRyOaCtCrlmhCKRoJya7nZ-1QvqHsLOZqwqVprKncsczvSPGZG_PB6ywv_pVU8naYdpZ9FGyoqvcMb7d6dNYQeWWi1DaHYg-PO4kpcyYDCXNeI0so_em6rShFdwO0wmIUrAOoax1joM4iXWoSal1WaCKqgFVomFA8XzP5BP4YWmN2reh6e1WlrXIws7dWlKhKhQu9Em1LV6aix6LukiYXBMS3rHkluuQCzyfUFWoPKmRiRjDSyUo5rQEWnCU-gxaVYwimbRXDMMR4610gaN1UO8a0b5mNN317wRV0FoLjsHKw6vNraJZxveQ5lSp2P_DZ_7c9RmmOCv4YPvEK-_vsbUOf-XBpK-3uGDlrzw3ANwuuMDPKa6G7X1I8MYQyzV2lI9QCmI34zawl_LxKRgduzazCbLEVTsxss0sXhL2f7LM63h1vfh2efGgbKjLd7L8k44w9NmpsP6ZPAJeY5rkLDOYvQj8O9Cs0R7REuWv8Yvy_A7LPbKhuWLH3zmV9pKNBgAA
-
-let current_tab = $state(ONE_TIME_DATA_TAB);
 
 let area_group = $state();
 let subarea = $state(0);
@@ -36,9 +32,6 @@ let piece_id_error: string | null = $state("Kein Wert vorhanden");
 
 let part_id = $state(1);
 let part_id_error = $state("");
-function part_id_validator() {
-  // Todo: implement :^)
-}
 
 let species: number | null = $state(null);
 let species_error = $state("Keine valide Spezies");
@@ -53,7 +46,6 @@ let d2_max_not_measurable = $state(false);
 
 let azimax = $state(0);
 let azimax_error = $state("Kein Wert vorhanden");
-function azimax_validator() {}
 
 let distmax = $state(0.0);
 let distmax_error = $state("Kein Wert vorhanden");
@@ -99,44 +91,14 @@ async function greet(event: Event) {
 
 <main class="container-fluid">
   <!-- Todo: extract these into components -->
-  <!-- Todo: this mess -->
-  <header class="row row-cols-auto align-items-start w-100">
-    <h1 class="h1 col">Liegende Totholzapp</h1>
-    <p class="col align-self-start justify-content-end">Made by and for:</p>
-    <img
-      class="img-fluid mw-100 col justify-content-end"
-      src={wsl_logo}
-      alt="WSL Logo"
-      style="height: 3rem;"
-    />
-  </header>
+  <Header />
 
-  <ul class="nav nav-pills w-100 gap-2 mb-4 justify-content-center">
-    <li class="nav-item">
-      <button
-        class="nav-link mx-2"
-        class:active={current_tab == ONE_TIME_DATA_TAB}
-        onclick={() => (current_tab = ONE_TIME_DATA_TAB)}>Einmalige Daten</button
-      >
-    </li>
-    <li class="nav-item">
-      <button
-        class="nav-link mx-2"
-        class:active={current_tab == INPUT_DATA_TAB}
-        onclick={() => (current_tab = INPUT_DATA_TAB)}>Neue Daten</button
-      >
-    </li>
-    <li class="nav-item">
-      <button
-        class="nav-link mx-2"
-        class:active={current_tab == DATA_TAB}
-        onclick={() => (current_tab = DATA_TAB)}>Aufgenommene Daten</button
-      >
-    </li>
-  </ul>
+  <Tabs />
 
   <!-- Todo: extract tabs into components -->
-  <div class="one-time-data container text-start" class:d-none={current_tab != ONE_TIME_DATA_TAB}>
+
+  <!-- Todo: if file exists, these need to be unchangeable -->
+  <div id="one_time" class="container text-start" class:d-none={!is_one_time()}>
     <label class="form-label" for="area_group">Flächengruppe:</label>
     <input
       class="form-control mb-4"
@@ -175,7 +137,7 @@ async function greet(event: Event) {
 
   <!-- Todo: team -->
 
-  <div class="input container text-start" class:d-none={current_tab != INPUT_DATA_TAB}>
+  <div id="input_tab" class="container text-start" class:d-none={!is_input()}>
     <label class="form-label" for="piece_id">Stück ID:</label>
     <input
       class="form-control"
@@ -203,8 +165,7 @@ async function greet(event: Event) {
       class="form-control"
       class:mb-4={!part_id_error}
       bind:value={part_id}
-      onchange={part_id_validator}
-      onkeypress={part_id_validator}
+      onchange={() => {}}
       id="part_id"
       min="1"
       max="99"
@@ -315,8 +276,7 @@ async function greet(event: Event) {
       class="form-control"
       class:mb-4={!azimax_error}
       bind:value={azimax}
-      onchange={azimax_validator}
-      onkeypress={azimax_validator}
+      onchange={() => {}}
       type="number"
       name="azimax"
       id="azimax"
@@ -513,7 +473,7 @@ async function greet(event: Event) {
     <button class="btn btn-primary mb-4 disabled">Daten aufnehmen</button>
   </div>
 
-  <div class="data container text-start" class:d-none={current_tab != DATA_TAB}>
+  <div id="data_tab" class="container text-start" class:d-none={!is_data()}>
     <h1 class="h1">Aufgenommene Daten</h1>
   </div>
 </main>

@@ -13,6 +13,9 @@ const config = {
       fallback: "index.html",
     }),
   },
+  // files: {
+  //   src: "frontend"
+  // }
 };
 
 export default config;
