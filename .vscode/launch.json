@@ -15,6 +15,14 @@
       "command": "NO_STRIP=true cargo tauri build",
       "showTerminal": true,
       "terminalName": "Tauri"
-    }
+    },
+    {
+      "name": "Build Debug",
+      "type": "f5anything",
+      "request": "launch",
+      "command": "cargo tauri android build --debug --apk --split-per-abi",
+      "showTerminal": true,
+      "terminalName": "Tauri"
+    },
   ]
 }

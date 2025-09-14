@@ -8,9 +8,14 @@ export const MIN_LENGTH_1 = 2; // [m]
 export const MIN_DIAMETER_2 = 36; // [cm]
 export const MIN_LENGTH_2 = 0.5; // [m]
 
+// Todo: load from file
 export const tree_species = [
   [-1, "unknown"],
   [100, "some species"],
 ];
+
+export const team = [
+  [9, "firstname lastname"]
+]
 
 export const decay_states = [1, 2, 3, 4, 5];
