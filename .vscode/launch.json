@@ -1,7 +1,7 @@
 {
   "configurations": [
     {
-      "name": "Run Tauri App",
+      "name": "Run tauri app",
       "type": "f5anything",
       "request": "launch",
       "command": "cargo tauri dev",
@@ -9,7 +9,7 @@
       "terminalName": "Tauri"
     },
     {
-      "name": "Build Tauri App",
+      "name": "Build tauri app",
       "type": "f5anything",
       "request": "launch",
       "command": "NO_STRIP=true cargo tauri build",
@@ -17,7 +17,7 @@
       "terminalName": "Tauri"
     },
     {
-      "name": "Build Debug",
+      "name": "Build android debug APK",
       "type": "f5anything",
       "request": "launch",
       "command": "cargo tauri android build --debug --apk --split-per-abi",
