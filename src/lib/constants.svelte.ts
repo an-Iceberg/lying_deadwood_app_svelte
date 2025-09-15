@@ -9,6 +9,11 @@ export const MIN_DIAMETER_2 = 36; // [cm]
 export const MIN_LENGTH_2 = 0.5; // [m]
 
 // Todo: load from file
+export const tree_ids = [
+  1, 2, 3, 4, 5, 1200
+]
+
+// Todo: load from file
 export const tree_species = [
   [-1, "unknown"],
   [100, "some species"],
