@@ -110,9 +110,6 @@ function check_d1_max() {
     return;
   }
 
-  // Check that the additional minimum requirements are met (with length)
-  // Todo: this
-
   d1_max_error = null;
 }
 
@@ -142,9 +139,6 @@ function check_d2_max() {
     d2_max_error = `Max muss grösser sein als Min`;
     return;
   }
-
-  // Check that the additional minimum requirements are met (with length)
-  // Todo: this
 
   d2_max_error = null;
 }
