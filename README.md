@@ -25,7 +25,7 @@ useful commands:
 `cargo tauri android build --split-per-abi --apk`
 
 ## Todo:
-- [ ] ability to swap min with max
+- [x] ability to swap min with max
 - [ ] find a good solution for `part_id`
 - [ ] display largest ID in input somewhere
 - [ ] display conditions (maybe make settings out of it) (what did i mean by this⁇)

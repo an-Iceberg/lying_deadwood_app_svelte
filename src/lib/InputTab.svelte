@@ -56,7 +56,7 @@ let distmin_error: string | null = $state("Kein Wert vorhanden");
 let len: number | null = $state(null);
 let length_error: string | null = $state("Kein Wert vorhanden");
 
-let min_vals_error: string | null = $state("Keine Werte vorhanden");
+let len_and_dia_min_error: string | null = $state("Keine Werte vorhanden");
 
 let decay = $state();
 
@@ -176,7 +176,7 @@ function check_d1_min() {
   }
 
   // Check that value is not null or any of its variants
-  if (d1_min == null || d1_min == undefined) {
+  if (d1_min == null) {
     d1_min_error = `Kein Wert vorhanden`;
     return;
   }
@@ -191,13 +191,24 @@ function check_d1_min() {
   }
 
   // Check that it is larger than the min counterpart
-  if (d1_max != null && d1_max != undefined && d1_max < d1_min) {
+  if (d1_max != null && d1_max < d1_min) {
     d1_min_error = `Min muss kleiner sein als Max`;
     return;
   }
 
   // Check that the additional minimum requirements are met (with length)
   // Todo: this
+
+  if (len != null && (d2_min == null || d2_min < d1_min)) {
+    if (len >= MIN_LENGTH_1 && d1_min < MIN_DIAMETER_1) {
+      d1_min_error = `Wert muss grösser als ${MIN_DIAMETER_1} sein`;
+      return;
+    } else if (MIN_LENGTH_1 > len && len >= MIN_LENGTH_2 && d1_min < MIN_DIAMETER_2) {
+      d1_min_error = `Wert muss grösser als ${MIN_DIAMETER_2} sein`;
+      return;
+    }
+  }
+  // If d2_min > d1_min then d2_min does input validation
 
   d1_min_error = null;
 }
@@ -209,17 +220,17 @@ function check_d2_min() {
   }
 
   // Check that value is not null or any of its variants
-  if (d2_min == null || d2_min == undefined) {
+  if (d2_min == null) {
     d2_min_error = `Kein Wert vorhanden`;
     return;
   }
 
   // Check that it is in range
   if (d2_min > MAX_DIAMETER) {
-    d1_max_error = `Wert muss kleiner als ${MAX_DIAMETER} sein`;
+    d2_min_error = `Wert muss kleiner als ${MAX_DIAMETER} sein`;
     return;
   } else if (d2_min < MIN_DIAMETER_1) {
-    d1_max_error = `Wert muss grösser sein als ${MIN_DIAMETER_1} sein`;
+    d2_min_error = `Wert muss grösser sein als ${MIN_DIAMETER_1} sein`;
     return;
   }
 
@@ -231,6 +242,17 @@ function check_d2_min() {
 
   // Check that the additional minimum requirements are met (with length)
   // Todo: this
+
+  if (len != null && (d1_min == null || d1_min < d2_min)) {
+    if (len >= MIN_LENGTH_1 && d2_min < MIN_DIAMETER_1) {
+      d2_min_error = `Wert muss grösser als ${MIN_DIAMETER_1} sein`;
+      return;
+    } else if (MIN_LENGTH_1 > len && len >= MIN_LENGTH_2 && d2_min < MIN_DIAMETER_2) {
+      d2_min_error = `Wert muss grösser als ${MIN_DIAMETER_2} sein`;
+      return;
+    }
+  }
+  // If d1_min > d2_min then d1_min does input validation
 
   d2_min_error = null;
 }
@@ -258,13 +280,42 @@ function check_distmin() {
 
 function check_length() {
   // Todo: min len and dia combination check
-  if (len == null || len == undefined) {
+  // Fix: inputting «3» yielsd no-value-error
+  if (len == null) {
     length_error = `Kein Wert vorhanden`;
-  } else if (len < 0 || len > MAX_LENGTH) {
-    length_error = `Wert muss zwischen 0 und ${MAX_LENGTH} sein`;
-  } else {
-    length_error = null;
+    return;
   }
+
+  if (len < 0 || len > MAX_LENGTH) {
+    length_error = `Wert muss zwischen 0 und ${MAX_LENGTH} sein`;
+    return;
+  }
+
+  if (d1_min != null || d2_min != null) {
+    let dia = null;
+
+    if (d1_min == null) dia = d2_min;
+    else if (d2_min == null) dia = d1_min;
+    else dia = Math.max(d1_min, d2_min);
+
+    if (dia! >= MIN_DIAMETER_2 && len < MIN_LENGTH_2) {
+      // First case for thick logs
+      length_error = `Wert muss grösser als ${MIN_LENGTH_2} sein`;
+      return;
+    } else if (MIN_DIAMETER_2 > dia! && dia! >= MIN_DIAMETER_1 && len < MIN_LENGTH_1) {
+      // Second case is for long logs
+      length_error = `Wert muss grösser als ${MIN_LENGTH_1} sein`;
+      return;
+    }
+  }
+
+  length_error = null;
+}
+
+function check_dmin_and_len() {
+  check_d1_min();
+  check_d2_min();
+  check_length();
 }
 
 function check_ref_tree_id() {}
@@ -286,7 +337,7 @@ function is_all_input_valid() {
     !azimin_error &&
     !distmin_error &&
     !length_error &&
-    !min_vals_error &&
+    !len_and_dia_min_error &&
     !ref_tree_id_error &&
     !former_tree_id_error
   );
@@ -533,6 +584,7 @@ function clamp(value: number, min: number, max: number): number {
       check_distmin();
       check_azimax();
       check_azimin();
+      check_dmin_and_len();
     }}>↕ Min und Max vertauschen ↕</button
   >
   <br />
@@ -570,7 +622,7 @@ function clamp(value: number, min: number, max: number): number {
       class="form-control"
       disabled={d1_min_not_measurable}
       bind:value={d1_min}
-      onchange={check_d1_min}
+      onchange={check_dmin_and_len}
       type="number"
       name="d1_min"
       min="0"
@@ -615,7 +667,7 @@ function clamp(value: number, min: number, max: number): number {
       class="form-control"
       disabled={d2_min_not_measurable}
       bind:value={d2_min}
-      onchange={check_d2_min}
+      onchange={check_dmin_and_len}
       type="number"
       name="d2_min"
       min="0"
@@ -674,7 +726,7 @@ function clamp(value: number, min: number, max: number): number {
       id="length"
       class="form-control"
       bind:value={len}
-      onchange={check_length}
+      onchange={check_dmin_and_len}
       type="number"
       name="length"
       min="0"
@@ -685,9 +737,9 @@ function clamp(value: number, min: number, max: number): number {
   {#if length_error}
     <div class="alert alert-warning form-text">{length_error}</div>
   {/if}
-  {#if min_vals_error}
-    <div class="alert alert-warning from-text mb-4">{min_vals_error}</div>
-  {/if}
+  <!-- {#if len_and_dia_min_error}
+    <div class="alert alert-warning from-text mb-4">{len_and_dia_min_error}</div>
+  {/if} -->
 
   <!-- Todo: decay -->
 
