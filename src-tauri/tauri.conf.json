@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "lying_deadwood_app_svelte",
+  "productName": "Liegende Totholzapp",
   "version": "0.1.0",
   "identifier": "com.priscilla.lying-deadwood-app-svelte",
   "build": {

@@ -1,7 +1,6 @@
 <script lang="ts">
 import {is_input} from "$lib/tab_state.svelte";
 import {
-  today,
   MAX_DIAMETER,
   MAX_DISTANCE,
   MAX_LENGTH,
@@ -9,6 +8,7 @@ import {
   MIN_DIAMETER_2,
   MIN_LENGTH_1,
   MIN_LENGTH_2,
+  tree_species,
 } from "$lib/constants.svelte";
 
 // https://svelte.dev/playground/052c877eb34c45ee8f773a8bf8475347?version=5.38.6#H4sIAAAAAAAAA5VVUW_TMBD-K0cAJRVN2iF48ZpKlZgmBGLS2Atq--AkbmuWOMF2ulRZ_ztnO9lSmDZ4qOSc7777vvNnt_UELZhHvM-iqjXsac4zqnkpvLG34TlTHlm2nj5UJscEMN5VLKoqUnuWaxNLqGJPxdNSaCY0wngzlUpe6flKrHTONOhS0xxiOJtOz_sYNywUBpetCa00EqoZgenYfaZlXkoC_uX14odvQscxPJ_5aXH95fvXxc3Fv5fcXCy-usy1JfaGgKqu9I5Jw8zRDjuqUUGroIF4Dk1k4eD-HqajSLKsTlkQ0DEkI7NN4R2uLJ75bWqRmjH3E2cBFxlrRj01M4yCNu5UXmw6ivBoNJNB0IyB234cXsUxONDn2Wi-gcABL23-ulMyf2DwQAuTn0iMHxI7xKOdntM6mzyeu5gpfciZtUBkkUJjEMoFk12HjKsqpwcCm5w1HRyOaCtCrlmhCKRoJya7nZ-1QvqHsLOZqwqVprKncsczvSPGZG_PB6ywv_pVU8naYdpZ9FGyoqvcMb7d6dNYQeWWi1DaHYg-PO4kpcyYDCXNeI0so_em6rShFdwO0wmIUrAOoax1joM4iXWoSal1WaCKqgFVomFA8XzP5BP4YWmN2reh6e1WlrXIws7dWlKhKhQu9Em1LV6aix6LukiYXBMS3rHkluuQCzyfUFWoPKmRiRjDSyUo5rQEWnCU-gxaVYwimbRXDMMR4610gaN1UO8a0b5mNN317wRV0FoLjsHKw6vNraJZxveQ5lSp2P_DZ_7c9RmmOCv4YPvEK-_vsbUOf-XBpK-3uGDlrzw3ANwuuMDPKa6G7X1I8MYQyzV2lI9QCmI34zawl_LxKRgduzazCbLEVTsxss0sXhL2f7LM63h1vfh2efGgbKjLd7L8k44w9NmpsP6ZPAJeY5rkLDOYvQj8O9Cs0R7REuWv8Yvy_A7LPbKhuWLH3zmV9pKNBgAA
@@ -19,7 +19,7 @@ let piece_id_error: string | null = $state("Kein Wert vorhanden");
 let part_id: number | null = $state(null);
 let part_id_error: string | null = $state(null);
 
-let species: number | null = $state(null);
+let species = $state(-1);
 let species_error = $state("Keine valide Spezies");
 
 let crown_deadwood = $state(false);
@@ -388,12 +388,10 @@ function clamp(value: number, min: number, max: number): number {
   <!-- help: https://www.w3schools.com/howto/howto_js_filter_dropdown.asp -->
 
   <label class="form-label" for="species">Baumart:</label>
-  <select class="form-select mb-4" id="species">
-    <option value="null">null unknown</option>
-    <option value="100">100 species</option>
-    <option value="101">101 species</option>
-    <option value="102">102 species</option>
-    <option value="103">103 species</option>
+  <select class="form-select mb-4" id="species" bind:value={species}>
+    {#each tree_species as species}
+      <option value={species.id}>{`${species.id} ${species.name}`}</option>
+    {/each}
   </select>
 
   <!-- Todo: Kronentotholz -->

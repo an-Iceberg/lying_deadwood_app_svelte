@@ -7,6 +7,7 @@
     "npm:@tauri-apps/api@2": "2.7.0",
     "npm:@tauri-apps/cli@2": "2.7.1",
     "npm:@tauri-apps/plugin-opener@2": "2.4.0",
+    "npm:date-picker-svelte@^2.16.0": "2.16.0_svelte@5.34.7__acorn@8.15.0",
     "npm:svelte-check@4": "4.2.2_svelte@5.34.7__acorn@8.15.0_typescript@5.6.3",
     "npm:svelte@5": "5.34.7_acorn@8.15.0",
     "npm:typescript@~5.6.2": "5.6.3",
@@ -440,6 +441,12 @@
     "cookie@0.6.0": {
       "integrity": "sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw=="
     },
+    "date-picker-svelte@2.16.0_svelte@5.34.7__acorn@8.15.0": {
+      "integrity": "sha512-BouDXc1Hh2urUehFGwji7C75XNcGMUPXU3tj9YbbfTjhgH/edrl8IzDDfn6hCu51ww0iBqKTQpZhZ5dThV9duQ==",
+      "dependencies": [
+        "svelte"
+      ]
+    },
     "debug@4.4.1": {
       "integrity": "sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==",
       "dependencies": [
@@ -688,6 +695,7 @@
         "npm:@tauri-apps/api@2",
         "npm:@tauri-apps/cli@2",
         "npm:@tauri-apps/plugin-opener@2",
+        "npm:date-picker-svelte@^2.16.0",
         "npm:svelte-check@4",
         "npm:svelte@5",
         "npm:typescript@~5.6.2",

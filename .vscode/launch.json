@@ -1,5 +1,6 @@
 {
   "configurations": [
+    // Todo: https://stackoverflow.com/questions/71272054/how-to-run-multiple-commands-at-once-asynchronously-in-fish-shell
     {
       "name": "Run tauri app",
       "type": "f5anything",
@@ -10,6 +11,14 @@
     },
     {
       "name": "Build tauri app",
+      "type": "f5anything",
+      "request": "launch",
+      "command": "cargo tauri build --no-bundle",
+      "showTerminal": true,
+      "terminalName": "Tauri"
+    },
+    {
+      "name": "Bundle tauri app",
       "type": "f5anything",
       "request": "launch",
       "command": "NO_STRIP=true cargo tauri build",
