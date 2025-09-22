@@ -1,9 +1,9 @@
 #![allow(clippy::needless_return)]
 
-use std::{fs::create_dir, io::ErrorKind, path::Path, sync::Mutex};
+use std::{default, fs::create_dir, io::ErrorKind, path::Path, sync::Mutex};
 use directories::UserDirs;
 use polars::frame::DataFrame;
-use tauri::State;
+use tauri::Manager;
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
@@ -18,11 +18,11 @@ pub fn run()
   tauri::Builder::default()
     .setup(|app|
     {
-      Mutex::new(LyingDeadwoodAppState::new());
+      app.manage(Mutex::new(LyingDeadwoodAppState::new()));
       return Ok(());
     })
     .plugin(tauri_plugin_opener::init())
-    .invoke_handler(tauri::generate_handler!(greet))
+    .invoke_handler(tauri::generate_handler![increment, greet])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
@@ -40,6 +40,7 @@ pub fn run()
 #[derive(Default)]
 struct LyingDeadwoodAppState
 {
+  pub counter: u8, // dbg
   path_to_files: String,
   data: DataFrame
 }
@@ -49,6 +50,7 @@ impl LyingDeadwoodAppState
   pub fn new() -> Self
   {
     // Todo: use safe Rust
+    // Creates the directory ~/Documents/lyind_deadwood_app if it doesn't exist already
     let user_dirs = UserDirs::new().unwrap();
     let document_dir_path = user_dirs.document_dir().unwrap();
     let app_data_path = document_dir_path.join("lyind_deadwood_app");
@@ -71,8 +73,20 @@ impl LyingDeadwoodAppState
 
     return app;
   }
+
+  pub fn inc(&mut self)
+  {
+    self.counter += 1;
+  }
 }
 
+#[tauri::command]
+fn increment(state: tauri::State<'_, Mutex<LyingDeadwoodAppState>>, amount: u32)
+{
+  let mut state = state.lock().unwrap();
+  for _ in 0..amount { state.inc(); }
+  println!("counter: {}", state.counter);
+}
 
 // #[tauri::command]
 // async fn command_name(state: State<'_, Mutex<LyingDeadwoodAppState>>) -> Result<(), String>

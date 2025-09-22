@@ -3,7 +3,7 @@ import wsl_logo from "$lib/Logo_WSL.svg";
 </script>
 
 <header class="mb-4">
-  <h1 class="display-3 mb-0">Liebende Totholzapp</h1>
+  <h1 class="display-3 mb-0">Liegende Totholzapp</h1>
   <span>
     <p class="mb-0 me-2">Made by and for:</p>
     <a href="https://wsl.ch/" target="_blank">

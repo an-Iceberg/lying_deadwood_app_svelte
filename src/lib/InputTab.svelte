@@ -348,6 +348,7 @@ function clamp(value: number, min: number, max: number): number {
 
 <div id="input_tab" class="container text-start" class:d-none={!is_input()}>
   <label class="form-label" for="piece_id">Stück ID:</label>
+  <!-- Todo: display largest ID here somewhere -->
   <input
     class="form-control"
     class:mb-4={!piece_id_error}
